@@ -6,7 +6,7 @@ import urllib2
 import urllib
 
 publisher = {
-    'key': 'http://sverigesradio.se/',
+    'key': 'sverigesradio.se',
     'name': 'Sveriges Radio',
     'country': 'ALL'
 }
