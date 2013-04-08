@@ -6,17 +6,16 @@ import urllib2
 import urllib
 
 publisher = {
-    'key': 'scraperwiki.com',
-    'name': 'ScraperWiki',
+    'key': 'http://sverigesradio.se/',
+    'name': 'Sveriges Radio',
     'country': 'ALL'
 }
-
 
 def extractBrand(feedContents, mediaType):
     brand = feedContents.feed
     content = {}
     content["title"] = brand.title
-    content["description"] = brand.summary
+    content["description"] = brand.summary 
     content["media_type"] = mediaType
     content["image"] = brand.image.href
     content["uri"] = brand.link
@@ -46,21 +45,22 @@ def extractEpisode(episode, brand, mediaType):
     return content
 
 def postToAtlas(item, apiKey, useStage):
-	headers = {'Content-Type': 'application/json'}
-	subdomain = ""
-	if (useStage):
-		subdomain = "stage."
-	atlasUrl = "http://%satlas.metabroadcast.com/3.0/content.json?apiKey=%s" % (subdomain, apiKey)
-	itemJson = json.dumps(item, indent=4 * ' ')
-	print item["uri"]
-	try:
-		postReq = urllib2.Request(atlasUrl, itemJson, headers)
-		postResponse = urllib2.urlopen(postReq)
-		print postResponse.getcode()
-		print postResponse.info()
-		print postResponse.read()
-	except urllib2.HTTPError as e:
-		print e
+    headers = {'Content-Type': 'application/json'}
+    subdomain = ""
+    if (useStage):
+	subdomain = "stage."
+    atlasUrl = "http://%satlas.metabroadcast.com/3.0/content.json?apiKey=%s" % (subdomain, apiKey)
+    itemJson = json.dumps(item, indent=4 * ' ')
+    print atlasUrl
+    print itemJson
+    try:
+	postReq = urllib2.Request(atlasUrl, itemJson, headers)
+	postResponse = urllib2.urlopen(postReq)
+	print postResponse.getcode()
+	print postResponse.info()
+	print postResponse.read()
+    except urllib2.HTTPError as e:
+	print e
 
 
 def uploadFeed(feedUrl, mediaType, apiKey, useStage):
@@ -68,8 +68,8 @@ def uploadFeed(feedUrl, mediaType, apiKey, useStage):
 	brand = extractBrand(content, mediaType)
 	postToAtlas(brand, apiKey, useStage)
 	for entry in content.entries:
-		episode = extractEpisode(entry, brand, mediaType)
-		postToAtlas(episode, apiKey, useStage)
+	   episode = extractEpisode(entry, brand, mediaType)
+	   postToAtlas(episode, apiKey, useStage)
 
 usage = "usage: %prog [options] feed_url"
 desc="Uploads the contents of an RSS or Atom feed to Atlas."
